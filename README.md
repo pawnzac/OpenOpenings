@@ -1,5 +1,7 @@
 # OpenOpenings
 
+![Screenshot](screenshot1.png?raw=true)
+
 ## What it does?
 
 OpenOpenings is a program for practicing chess openings.
