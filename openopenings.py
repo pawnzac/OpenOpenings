@@ -48,7 +48,7 @@ class OpenOpenings(object):
         
         self.var_num = 0
         self.var_node = None
-        self.backup_board = None
+        self.backup_board = []
         
         self.current = None
         self.hint_level = 0
@@ -93,7 +93,7 @@ class OpenOpenings(object):
                             self.hint_level = 0
                             
                             if (len(self.node.variations)>1):
-                                self.backup_board = self.board.copy()
+                                self.backup_board.append(self.board.copy())
                                 self.var_node = self.node
                                 if (self.var_num==0):
                                     self.var_num = 1
@@ -102,10 +102,11 @@ class OpenOpenings(object):
                                 if (len(self.var_node.variations) <= (self.var_num+1)):
                                     self.var_num = 0
                                     self.node = self.var_node.variations[0]
+                                    self.board = self.backup_board.pop().copy()
                                 else:
                                     self.var_num += 1
                                     self.node = self.var_node.variations[self.var_num]
-                                self.board = self.backup_board.copy()
+                                    self.board = self.backup_board[-1].copy()
                                 self.queue.put(["Board",self.board])
                             else:
                                 self.node = self.node.next()

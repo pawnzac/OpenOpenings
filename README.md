@@ -37,6 +37,3 @@ from the project's directory will output `dist/openopenings`, a standalone execu
 
 Once I've iterated a bit more on it, I'll add the single-file release to the page so that it's easy to just download the file for people that don't have Python.
 
-## Current Limitations
-
-Currently, it doesn't handle "nested" variations well. I don't really encounter that much in the Lichess studies I wanted to practice on so I didn't put much thought into it. To be clear, the program does handle variations well and fine. It just doesn't handle variations-within-variations. I will add this at some point.
