@@ -3,25 +3,32 @@ from tkinter import ttk
 import chess
 import math
 from utility import *
+import sys
+import os
 black_square_color = "#add8e6"
 
+try:
+    base_path = sys._MEIPASS
+except Exception:
+    base_path = os.path.abspath(".")
+
 piece_pics = {
-    "k" : tk.PhotoImage(file="img/black_king.png"),
-    "q" : tk.PhotoImage(file="img/black_queen.png"),
-    "r" : tk.PhotoImage(file="img/black_rook.png"),
-    "b" : tk.PhotoImage(file="img/black_bishop.png"),
-    "n" : tk.PhotoImage(file="img/black_knight.png"),
-    "p" : tk.PhotoImage(file="img/black_pawn.png"),
-    "K" : tk.PhotoImage(file="img/white_king.png"),
-    "Q" : tk.PhotoImage(file="img/white_queen.png"),
-    "R" : tk.PhotoImage(file="img/white_rook.png"),
-    "B" : tk.PhotoImage(file="img/white_bishop.png"),
-    "N" : tk.PhotoImage(file="img/white_knight.png"),
-    "P" : tk.PhotoImage(file="img/white_pawn.png")
+    "k" : tk.PhotoImage(file=os.path.join(base_path,"img/black_king.png")),
+    "q" : tk.PhotoImage(file=os.path.join(base_path,"img/black_queen.png")),
+    "r" : tk.PhotoImage(file=os.path.join(base_path,"img/black_rook.png")),
+    "b" : tk.PhotoImage(file=os.path.join(base_path,"img/black_bishop.png")),
+    "n" : tk.PhotoImage(file=os.path.join(base_path,"img/black_knight.png")),
+    "p" : tk.PhotoImage(file=os.path.join(base_path,"img/black_pawn.png")),
+    "K" : tk.PhotoImage(file=os.path.join(base_path,"img/white_king.png")),
+    "Q" : tk.PhotoImage(file=os.path.join(base_path,"img/white_queen.png")),
+    "R" : tk.PhotoImage(file=os.path.join(base_path,"img/white_rook.png")),
+    "B" : tk.PhotoImage(file=os.path.join(base_path,"img/white_bishop.png")),
+    "N" : tk.PhotoImage(file=os.path.join(base_path,"img/white_knight.png")),
+    "P" : tk.PhotoImage(file=os.path.join(base_path,"img/white_pawn.png"))
 
 }
 
-blank_img = tk.PhotoImage(file="img/black_square.png")
+blank_img = tk.PhotoImage(file=os.path.join(base_path,"img/black_square.png"))
 
 class UserInterface(object):
     def __init__(self, master, queue, end_command):
