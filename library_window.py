@@ -58,22 +58,32 @@ class LibraryWindow(object):
     def get_pgn(self, book, name):
         return self.library[book][name]
 
-    def make_select_book(self, var):
+    def make_select_book(self):
         def com():
-            self.book_select = var.get()
+            self.book_select = self.listbox.get(self.listbox.curselection())
+            self.current_book = self.book_select
             self.win.destroy()
             self.win = tk.Toplevel()
             self.win.wm_title("Library")
-            sel = tk.StringVar(self.win, "0")
-            for key in self.library[self.book_select].keys():
-                tk.Radiobutton(self.win, text=key, variable=sel, value=key).pack(side=tk.TOP, ipady=5)
-            tk.Button(self.win, text="Next", command=self.make_select_final(sel)).pack(side=tk.TOP, ipady=5)
-            self.current_book = self.book_select
+
+            tk.Button(self.win, text="Next", command=self.make_select_final()).pack(side=tk.TOP)
+
+            scrollbar = tk.Scrollbar(self.win)
+            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+            self.listbox = tk.Listbox(self.win, yscrollcommand=scrollbar.set)
+            self.listbox.pack(side=tk.LEFT)
+
+            scrollbar.config(command=self.listbox.yview)
+        
+            for (key, value) in self.library[self.book_select].items():
+                self.listbox.insert(tk.END, key)
+
         return com
 
-    def make_select_final(self, var):
+    def make_select_final(self):
         def com():
-            chapter = var.get()
+            chapter = self.listbox.get(self.listbox.curselection())
             self.win.destroy()
             self.current_pgn = self.library[self.book_select][chapter]["pgn"]
             self.current_color = self.library[self.book_select][chapter]["color"]
@@ -85,14 +95,20 @@ class LibraryWindow(object):
         self.win = tk.Toplevel()
         self.win.wm_title("Library")
 
-        sel = tk.StringVar(self.win, "0")
+        tk.Button(self.win, text="Next", command=self.make_select_book()).pack(side=tk.TOP)
 
+        scrollbar = tk.Scrollbar(self.win)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.listbox = tk.Listbox(self.win, yscrollcommand=scrollbar.set)
+        self.listbox.pack(side=tk.LEFT)
+
+        scrollbar.config(command=self.listbox.yview)
+        
         for (key, value) in self.library.items():
-            tk.Radiobutton(self.win, text=key, variable=sel,
-                           value=key).pack(side=tk.TOP, ipady=5)
+            self.listbox.insert(tk.END, key)
+        
 
-
-        tk.Button(self.win, text="Next", command=self.make_select_book(sel)).pack(side=tk.TOP, ipady=5)
         
 
     def write(self, lib_file):
