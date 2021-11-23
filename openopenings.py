@@ -103,9 +103,6 @@ class OpenOpenings(object):
                             self.awaiting_move = False
                             self.need_to_update_board = True
                             self.hint_level = 0
-                            print(self.var_num)
-                            print(len(self.node.variations))
-                                
                             
                             if (len(self.node.variations)>1):
                                 self.backup_board.append(self.board.copy())
