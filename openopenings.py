@@ -165,6 +165,9 @@ class OpenOpenings(object):
     def make_open(self):
         def com():
             fs = tk.filedialog.askopenfilenames(title="Open")
+            if (len(fs)==0):
+                return
+            
             color = "no"
             while ((color != "white") & (color != "black") & (color != "")):
                 color = tk.simpledialog.askstring("Color to play", "What color will you play? (white/black)")
@@ -197,7 +200,13 @@ class OpenOpenings(object):
         def com():
             pgn = self.library.get_current_pgn()
             color = self.library.get_color()
-        
+
+            self.moves = 0
+            self.tries = 0
+
+
+            self.queue.put(["Move", self.moves])
+            self.queue.put(["Try", self.tries])
             self.queue.put(["Flip", color])
             self.player = chess.WHITE if color=="white" else chess.BLACK
             self.awaiting_move = color=="white"
