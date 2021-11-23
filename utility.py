@@ -51,9 +51,9 @@ def compute_stats(x):
             last_practice = t['time']
 
     fmt_lastprac = datetime.utcfromtimestamp(last_practice).strftime("%Y-%m-%d %H:%M:%S UTC")
-    return {'All Time' : round(all_time_tries / all_time_moves,2),
-            'Last Week': round(last7_tries/last7_moves,2),
-            'Last 30 Days': round(last30_tries/last30_moves,2),
+    return {'All Time' : round(100*all_time_moves / all_time_tries,2),
+            'Last Week': round(100*last7_moves/last7_tries,2),
+            'Last 30 Days': round(100*last30_moves/last30_tries,2),
             'Last Practice': fmt_lastprac}
 
 

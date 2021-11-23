@@ -24,18 +24,28 @@ from tkinter import simpledialog
 import os
 from os.path import expanduser, exists
 from score_window import ScoreWindow
+from library_window import LibraryWindow
 import time
 import chess
 import chess.pgn
 import json
 from gui import UserInterface
 from utility import *
+import io
 class OpenOpenings(object):
     def __init__(self, master):
         self.master = master
         self.queue = queue.Queue()
 
         self.internal_queue = queue.Queue()
+        
+        self.lib_file = expanduser("~") + "/.openopenings.json"
+        if (exists(self.lib_file) and (os.stat(self.lib_file).st_size > 0)):
+            self.library = LibraryWindow(self.lib_file, self.internal_queue)
+        else:
+            self.library = LibraryWindow(None, self.internal_queue)
+        
+
         self.gui = UserInterface(master, self.queue, self.end_application)
         self.running = True
         self.node = None
@@ -60,6 +70,8 @@ class OpenOpenings(object):
         self.set_open()
         self.set_cancel()
         self.set_score()
+        self.set_library()
+        self.set_start()
         self.move_list = []
         self.awaiting_move = False
         self.thread1 = threading.Thread(target=self.worker_thread1)
@@ -115,6 +127,7 @@ class OpenOpenings(object):
                             if ((self.node is None) & (self.var_num==0)):
                                 self.queue.put(["Status", "Done!"])
                                 self.write_score()
+                                self.library.write(self.lib_file)
                         else:
                             self.queue.put(["Status", "Incorrect."])
 
@@ -149,29 +162,55 @@ class OpenOpenings(object):
 
     def make_open(self):
         def com():
-            f = tk.filedialog.askopenfilename(title="Open")
-            if (f==""):
-                return
+            fs = tk.filedialog.askopenfilenames(title="Open")
             color = "no"
             while ((color != "white") & (color != "black") & (color != "")):
                 color = tk.simpledialog.askstring("Color to play", "What color will you play? (white/black)")
 
-            if (color==""):
-                return
+                if (color==""):
+                    return
+                    
+                book = tk.simpledialog.askstring("Book to add to", "What book to add it to?")
+                if (book==""):
+                    return
 
+            for f in fs:
+                if (f==""):
+                    return
+
+                name = tk.simpledialog.askstring("Name of chapter", "What is the name of the chapter for file " + f + "?")
+                if (name==""):
+                    return
+            
+                fh = open(f,mode='r')
+                pgn = fh.read()
+                fh.close()
+                self.library.add_to_library(name, pgn, book, color)
+                
+            self.library.write(self.lib_file)
+            self.internal_queue.put("Continue")
+        return com
+
+    def make_start(self):
+        def com():
+            pgn = self.library.get_current_pgn()
+            color = self.library.get_color()
+        
             self.queue.put(["Flip", color])
             self.player = chess.WHITE if color=="white" else chess.BLACK
-            self.awaiting_move = color=="white" 
-            pgn = open(f)
-            game = chess.pgn.read_game(pgn)
-            self.current = f
+            self.awaiting_move = color=="white"
+            pgn_io = io.StringIO(pgn)
+            game = chess.pgn.read_game(pgn_io)
+        
+            self.current = self.library.current_book + "/" + self.library.current_chapter
             self.board = game.board()
             self.node = game.next()
             self.queue.put(["Board", self.board])
             self.done = False
             self.internal_queue.put("Continue")
-        return com
             
+        return com
+        
     def set_command(self):
         for row in range(0,8):
             for col in range(0,8):
@@ -190,14 +229,26 @@ class OpenOpenings(object):
         self.queue.put(["SetupOpen", self.make_open()])
 
     def set_score(self):
-        self.queue.put(["SetupScore", self.display_scores])
-    
+        self.queue.put(["SetupScore", self.make_scores()])
+
+    def set_library(self):
+        self.queue.put(["SetupLibrary", self.display_library])
+
+    def set_start(self):
+        self.queue.put(["SetupStart", self.make_start()])
+
+    def make_scores(self):
+        def com():
+            self.display_scores()
+        return com
+    def display_library(self):
+        self.library.open_window()
+        
     def display_scores(self):
         output = {}
-        with open(self.score_file, 'r') as f:
-            scores = json.load(f)
-            for key, value in scores.items():
-                output[key] = compute_stats(value)
+        for (bookname, book) in self.library.library.items():
+            for (chaptername, chapter) in book.items():
+                output[bookname + "/" + chaptername] = compute_stats(chapter["sessions"])
 
         ScoreWindow(["Last Practice","All Time", "Last 30 Days", "Last Week"], output)
 
@@ -223,24 +274,7 @@ class OpenOpenings(object):
             self.queue.put(["MakeMove", p.symbol(), x0, x1])
 
     def write_score(self):
-        if (exists(self.score_file) & os.stat(self.score_file).st_size > 0):
-            with open(self.score_file, 'r') as infile:
-                toadd = json.load(infile)
-
-        else:
-            toadd = {}
-
-        if (self.current in toadd):
-            toadd[self.current].append({'tries': self.tries,
-                                        'moves': self.moves,
-                                        'time': time.time()})
-        else:
-            toadd[self.current] = [{'tries': self.tries,
-                                    'moves': self.moves,
-                                    'time': time.time()}]
-        
-        with open(self.score_file, 'w') as outfile:
-            json.dump(toadd, outfile)
+        self.library.add_session(self.tries, self.moves, time.time())
     
     def periodic_call(self):
         self.master.after(50, self.periodic_call)
@@ -251,8 +285,12 @@ class OpenOpenings(object):
 
     def worker_thread1(self):
         while self.running:
+            msg = self.internal_queue.get()
+            if (msg=="Library"):
+                self.queue.put(["ChangeChapter", self.library.current_book + " / " + self.library.current_chapter])
+
             if (not self.done):
-                msg = self.internal_queue.get()
+
                 if (self.board.turn != self.player):
                     if (self.node is not None):
                         self.send_make_move(self.node.move)

@@ -66,20 +66,30 @@ class UserInterface(object):
 
         self.moves_label = tk.Label(self.frm, text="Moves: 0")
         self.moves_label.grid(column=8, row=1)
+        
         self.output_label = tk.Label(self.frm, text="Get Ready!")
         self.output_label.grid(column=8, row=2)
 
+        self.start_button = tk.Button(self.frm, text="Start")
+        self.start_button.grid(column=8, row=3)
+        
+        self.library_button = tk.Button(self.frm, text="Library")
+        self.library_button.grid(column=8, row=4)
+
         self.scores_button = tk.Button(self.frm, text="Scores")
-        self.scores_button.grid(column=8, row=4)
+        self.scores_button.grid(column=8, row=5)
 
         self.init_board_draw()
         self.draw_board(chess.Board())
 
         self.hint_button = tk.Button(self.frm, text = "Hint")
-        self.hint_button.grid(column=8, row=5)
+        self.hint_button.grid(column=8, row=6)
 
-        self.open_button = tk.Button(self.frm, text = "Open")
-        self.open_button.grid(column=8, row=6)
+        self.open_button = tk.Button(self.frm, text = "Add to Library")
+        self.open_button.grid(column=8, row=7)
+
+        self.title_label = tk.Label(self.frm, text="No File Loaded.")
+        self.title_label.grid(row=8, columnspan=8)
 
 
     def processIncoming(self):
@@ -98,6 +108,12 @@ class UserInterface(object):
                     self.open_button.config(command=msg[1])
                 if (msg[0]=="SetupScore"):
                     self.scores_button.config(command=msg[1])
+                if (msg[0]=="SetupLibrary"):
+                    self.library_button.config(command=msg[1])
+                if (msg[0]=="SetupStart"):
+                    self.start_button.config(command=msg[1])
+                if (msg[0]=="ChangeChapter"):
+                    self.title_label.config(text=msg[1])
                 if (msg[0]=="Try"):
                     self.tries_label.configure(text="Tries: " + str(msg[1]))
                 if (msg[0]=="Move"):
@@ -140,7 +156,8 @@ class UserInterface(object):
                 else:
                     color = black_square_color
                     white = True
-                self.buttons[col+row*8] = tk.Button(self.frm, relief='flat', bg=color, bd=0, activebackground='#ecd9BA')
+                self.buttons[col+row*8] = tk.Button(self.frm, relief='flat',
+                                                    bg=color, bd=0, activebackground='#ecd9BA')
                 self.buttons[col+row*8].grid(column=7-col, row=row)
 
     def draw_board(self, board):
