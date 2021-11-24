@@ -88,8 +88,8 @@ class UserInterface(object):
         self.open_button = tk.Button(self.frm, text = "Add to Library")
         self.open_button.grid(column=8, row=7, sticky='nsew', padx=20, pady=5)
 
-        self.title_label = tk.Label(self.frm, text="No File Loaded.")
-        self.title_label.grid(row=8, columnspan=8, sticky='nsew', padx=20, pady=5)
+        self.title_label = tk.Label(self.frm, text="No File Loaded.", width=40)
+        self.title_label.grid(row=8, columnspan=8, rowspan=2, sticky='nsew')
 
 
     def processIncoming(self):

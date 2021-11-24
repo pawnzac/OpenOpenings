@@ -50,7 +50,7 @@ def compute_stats(x):
         if (t['time'] > last_practice):
             last_practice = t['time']
 
-    fmt_lastprac = datetime.utcfromtimestamp(last_practice).strftime("%Y-%m-%d %H:%M:%S UTC")
+    fmt_lastprac = datetime.utcfromtimestamp(last_practice).strftime("%Y-%m-%d")
 
     if (all_time_tries == 0):
         all_time = round(0,2)

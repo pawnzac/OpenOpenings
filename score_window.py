@@ -33,7 +33,7 @@ class ScoreWindow(object):
 
         i = 2
         for key, value in data.items():
-            tk.Label(win, text=key, borderwidth=2, relief='ridge').grid(row=i, column=0, sticky='nsew')
+            tk.Label(win, text=key, borderwidth=2, relief='ridge', anchor="w").grid(row=i, column=0, sticky='nsew')
             j = 1
             for s in stats:
                 tk.Label(win, text=str(value[s]), borderwidth=2, relief='ridge').grid(row=i, column=j, sticky='nsew')

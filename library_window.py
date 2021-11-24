@@ -18,6 +18,7 @@
 
 import tkinter as tk, time, threading, random, queue
 import json
+from tkinter import ttk
 
 class LibraryWindow(object):
     def __init__(self, library_file, queue):
@@ -65,19 +66,25 @@ class LibraryWindow(object):
             self.win.destroy()
             self.win = tk.Toplevel()
             self.win.wm_title("Library")
+            self.frame = ttk.Frame(self.win, padding=10)
+            self.frame.grid()
 
-            tk.Button(self.win, text="Next", command=self.make_select_final()).pack(side=tk.TOP)
+            tk.Button(self.frame, text="Select", command=self.make_select_final()).grid(row=0, column=0, sticky="nsew")
+            tk.Button(self.frame, text="Rename", command=self.make_select_final()).grid(row=0, column=1, sticky="nsew")
 
-            scrollbar = tk.Scrollbar(self.win)
-            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            scrollbar = tk.Scrollbar(self.frame)
+            scrollbar.grid(row=1, column=2, sticky="nsew")
 
-            self.listbox = tk.Listbox(self.win, yscrollcommand=scrollbar.set)
-            self.listbox.pack(side=tk.LEFT)
+            self.listbox = tk.Listbox(self.frame, yscrollcommand=scrollbar.set, width=65, height=20)
+            self.listbox.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
             scrollbar.config(command=self.listbox.yview)
-        
+            minw = 65
             for (key, value) in self.library[self.book_select].items():
+                minw = len(key) if len(key) > minw else minw
                 self.listbox.insert(tk.END, key)
+
+            self.listbox.config(width=minw)
 
         return com
 
@@ -94,14 +101,15 @@ class LibraryWindow(object):
     def open_window(self):
         self.win = tk.Toplevel()
         self.win.wm_title("Library")
+        self.win.geometry('600x400')
 
-        tk.Button(self.win, text="Next", command=self.make_select_book()).pack(side=tk.TOP)
+        tk.Button(self.win, text="Select", command=self.make_select_book()).pack(side=tk.TOP)
 
         scrollbar = tk.Scrollbar(self.win)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.listbox = tk.Listbox(self.win, yscrollcommand=scrollbar.set)
-        self.listbox.pack(side=tk.LEFT)
+        self.listbox.pack(side=tk.LEFT, fill="both", expand=True)
 
         scrollbar.config(command=self.listbox.yview)
         
@@ -109,8 +117,15 @@ class LibraryWindow(object):
             self.listbox.insert(tk.END, key)
         
 
-        
 
+    def rename(book0, chapter0, book1, chapter1):
+        if (book1 not in self.library):
+            self.library[book1] = {}
+        
+        self.library[book1][chapter1] = self.library[book0].pop(chapter0)
+
+        
+        
     def write(self, lib_file):
         with open(lib_file,'w') as f:
             json.dump(self.library, f)

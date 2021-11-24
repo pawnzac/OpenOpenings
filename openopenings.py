@@ -183,14 +183,21 @@ class OpenOpenings(object):
                 if (f==""):
                     return
 
-                name = tk.simpledialog.askstring("Name of chapter", "What is the name of the chapter for file " + f + "?")
-                if (name==""):
-                    return
-            
                 fh = open(f,mode='r')
-                pgn = fh.read()
+
+                game = chess.pgn.read_game(fh)
+                while (game is not None):
+                    exporter = chess.pgn.StringExporter(headers=True,
+                                                        variations=True,
+                                                        comments=True)
+                
+                    pgn = game.accept(exporter)
+
+                    self.library.add_to_library(game.headers["Event"],
+                                                pgn, book, color)
+                    
+                    game = chess.pgn.read_game(fh)
                 fh.close()
-                self.library.add_to_library(name, pgn, book, color)
                 
             self.library.write(self.lib_file)
             self.internal_queue.put("Continue")
@@ -257,9 +264,11 @@ class OpenOpenings(object):
         
     def display_scores(self):
         output = {}
-        for (bookname, book) in self.library.library.items():
-            for (chaptername, chapter) in book.items():
-                output[bookname + "/" + chaptername] = compute_stats(chapter["sessions"])
+        bookname = self.library.current_book
+        if bookname is not None:
+            for (chaptername, chapter) in self.library.library[bookname].items():
+                output[bookname + "/" + chaptername] = compute_stats(
+                    self.library.library[bookname][chaptername]["sessions"])
 
         ScoreWindow(["Last Practice","All Time", "Last 30 Days", "Last Week"], output)
 
@@ -294,11 +303,18 @@ class OpenOpenings(object):
             import sys
             sys.exit(1)
 
+    def format_title(self, x):
+        n = 38
+        return '\n'.join([x[idx:idx+n] for idx in range(0, len(x), n)])
+        
+        
     def worker_thread1(self):
         while self.running:
             msg = self.internal_queue.get()
             if (msg=="Library"):
-                self.queue.put(["ChangeChapter", self.library.current_book + " / " + self.library.current_chapter])
+                self.queue.put(["ChangeChapter",
+                                self.format_title(self.library.current_book +
+                                                  " / " + self.library.current_chapter)])
 
             if (not self.done):
 
