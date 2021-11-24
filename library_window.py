@@ -70,7 +70,7 @@ class LibraryWindow(object):
             self.frame.grid()
 
             tk.Button(self.frame, text="Select", command=self.make_select_final()).grid(row=0, column=0, sticky="nsew")
-            tk.Button(self.frame, text="Rename", command=self.make_select_final()).grid(row=0, column=1, sticky="nsew")
+            tk.Button(self.frame, text="Rename", command=self.make_rename()).grid(row=0, column=1, sticky="nsew")
 
             scrollbar = tk.Scrollbar(self.frame)
             scrollbar.grid(row=1, column=2, sticky="nsew")
@@ -117,8 +117,20 @@ class LibraryWindow(object):
             self.listbox.insert(tk.END, key)
         
 
+    def make_rename(self):
+        def com():
+            chapter = self.listbox.get(self.listbox.curselection())
+            newname = ""
+            while (newname==""):
+                newname = tk.simpledialog.askstring("New name", "Rename " + chapter + " to what?")
+            
+            self.library[self.current_book][newname] = self.library[self.current_book].pop(chapter)
 
-    def rename(book0, chapter0, book1, chapter1):
+        return com
+
+
+
+    def rename(self, book0, chapter0, book1, chapter1):
         if (book1 not in self.library):
             self.library[book1] = {}
         
