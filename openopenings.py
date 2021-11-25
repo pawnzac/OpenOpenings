@@ -41,9 +41,9 @@ class OpenOpenings(object):
         
         self.lib_file = expanduser("~") + "/.openopenings.json"
         if (exists(self.lib_file) and (os.stat(self.lib_file).st_size > 0)):
-            self.library = LibraryWindow(self.lib_file, self.internal_queue)
+            self.library = LibraryWindow(self.lib_file, self.internal_queue, self.make_open())
         else:
-            self.library = LibraryWindow(None, self.internal_queue)
+            self.library = LibraryWindow(None, self.internal_queue, self.make_open())
         
 
         self.gui = UserInterface(master, self.queue, self.end_application)
@@ -200,6 +200,7 @@ class OpenOpenings(object):
                 fh.close()
                 
             self.library.write(self.lib_file)
+            self.library.open_window()
             self.internal_queue.put("Continue")
         return com
 

@@ -21,9 +21,10 @@ import json
 from tkinter import ttk
 
 class LibraryWindow(object):
-    def __init__(self, library_file, queue):
+    def __init__(self, library_file, queue, add_func):
         self.library = None
         self.queue = queue
+        self.add_func = add_func
         if library_file is not None:
             self.load_library(library_file)
         else:
@@ -115,7 +116,8 @@ class LibraryWindow(object):
     def open_window(self):
 
         self.select_window({
-            "Select" : self.make_select_book()
+            "Select" : self.make_select_book(),
+            "Add to Library" : self.add_func
         }, self.library)
         
 
