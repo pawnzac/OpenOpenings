@@ -261,6 +261,10 @@ class OpenOpenings(object):
         return com
     def display_library(self):
         self.library.open_window()
+
+    def display_comments(self):
+        return self.node.comment
+        
         
     def display_scores(self):
         output = {}

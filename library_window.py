@@ -59,32 +59,46 @@ class LibraryWindow(object):
     def get_pgn(self, book, name):
         return self.library[book][name]
 
+    def select_window(self, commands, elements):
+        if (self.win is not None):
+            self.win.destroy()
+
+        self.win = tk.Toplevel()
+        self.win.wm_title("Library")
+        self.frame = ttk.Frame(self.win, padding=10)
+        self.frame.grid()
+
+        i = 0
+        for (name, cmd) in commands.items():
+            tk.Button(self.frame, text=name, command=cmd).grid(row=0, column=i, sticky="nsew")
+            i += 1
+
+        scrollbar = tk.Scrollbar(self.frame)
+        scrollbar.grid(row=1, column=i, stick="nsew")
+
+        self.listbox = tk.Listbox(self.frame, yscrollcommand=scrollbar.set, width=65, height=20)
+        self.listbox.grid(row=1, column=0, columnspan=i, sticky="nsew")
+
+        scrollbar.config(command=self.listbox.yview)
+        minw = 65
+        for (key, value) in elements.items():
+            minw = len(key) if len(key) > minw else minw
+            self.listbox.insert(tk.END, key)
+
+        self.listbox.config(width=minw)
+        
+        
+
     def make_select_book(self):
         def com():
             self.book_select = self.listbox.get(self.listbox.curselection())
             self.current_book = self.book_select
-            self.win.destroy()
-            self.win = tk.Toplevel()
-            self.win.wm_title("Library")
-            self.frame = ttk.Frame(self.win, padding=10)
-            self.frame.grid()
 
-            tk.Button(self.frame, text="Select", command=self.make_select_final()).grid(row=0, column=0, sticky="nsew")
-            tk.Button(self.frame, text="Rename", command=self.make_rename()).grid(row=0, column=1, sticky="nsew")
-
-            scrollbar = tk.Scrollbar(self.frame)
-            scrollbar.grid(row=1, column=2, sticky="nsew")
-
-            self.listbox = tk.Listbox(self.frame, yscrollcommand=scrollbar.set, width=65, height=20)
-            self.listbox.grid(row=1, column=0, columnspan=2, sticky="nsew")
-
-            scrollbar.config(command=self.listbox.yview)
-            minw = 65
-            for (key, value) in self.library[self.book_select].items():
-                minw = len(key) if len(key) > minw else minw
-                self.listbox.insert(tk.END, key)
-
-            self.listbox.config(width=minw)
+            self.select_window({
+                "Select" : self.make_select_final(),
+                "Rename" : self.make_rename()
+            }, self.library[self.book_select])
+            
 
         return com
 
@@ -99,22 +113,10 @@ class LibraryWindow(object):
         return com
     
     def open_window(self):
-        self.win = tk.Toplevel()
-        self.win.wm_title("Library")
-        self.win.geometry('600x400')
 
-        tk.Button(self.win, text="Select", command=self.make_select_book()).pack(side=tk.TOP)
-
-        scrollbar = tk.Scrollbar(self.win)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        self.listbox = tk.Listbox(self.win, yscrollcommand=scrollbar.set)
-        self.listbox.pack(side=tk.LEFT, fill="both", expand=True)
-
-        scrollbar.config(command=self.listbox.yview)
-        
-        for (key, value) in self.library.items():
-            self.listbox.insert(tk.END, key)
+        self.select_window({
+            "Select" : self.make_select_book()
+        }, self.library)
         
 
     def make_rename(self):
@@ -125,6 +127,10 @@ class LibraryWindow(object):
                 newname = tk.simpledialog.askstring("New name", "Rename " + chapter + " to what?")
             
             self.library[self.current_book][newname] = self.library[self.current_book].pop(chapter)
+            self.select_window({
+                "Select" : self.make_select_final(),
+                "Rename" : self.make_rename()
+            }, self.library[self.book_select])
 
         return com
 
