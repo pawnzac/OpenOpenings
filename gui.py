@@ -72,21 +72,23 @@ class UserInterface(object):
 
         self.start_button = tk.Button(self.frm, text="Start")
         self.start_button.grid(column=8, row=3, sticky='nsew', padx=20, pady=5)
+        self.hint_button = tk.Button(self.frm, text = "Hint")
+        self.hint_button.grid(column=8, row=4, sticky='nsew', padx=20, pady=5)
+
+        self.read_button = tk.Button(self.frm, text = "Read")
+        self.read_button.grid(column=8, row=5, sticky='nsew', padx=20, pady=5)
+
         
         self.library_button = tk.Button(self.frm, text="Library")
-        self.library_button.grid(column=8, row=4, sticky='nsew', padx=20, pady=5)
+        self.library_button.grid(column=8, row=6, sticky='nsew', padx=20, pady=5)
 
         self.scores_button = tk.Button(self.frm, text="Scores")
-        self.scores_button.grid(column=8, row=5, sticky='nsew', padx=20, pady=5)
+        self.scores_button.grid(column=8, row=7, sticky='nsew', padx=20, pady=5)
 
         self.init_board_draw()
         self.draw_board(chess.Board())
 
-        self.hint_button = tk.Button(self.frm, text = "Hint")
-        self.hint_button.grid(column=8, row=6, sticky='nsew', padx=20, pady=5)
 
-        self.open_button = tk.Button(self.frm, text = "Add to Library")
-        self.open_button.grid(column=8, row=7, sticky='nsew', padx=20, pady=5)
 
         self.title_label = tk.Label(self.frm, text="No File Loaded.", width=40)
         self.title_label.grid(row=8, columnspan=8, rowspan=2, sticky='nsew')
@@ -104,8 +106,8 @@ class UserInterface(object):
                     self.output_label.config(text=msg[1])
                 if (msg[0]=="SetupHint"):
                     self.hint_button.config(command=msg[1])
-                if (msg[0]=="SetupOpen"):
-                    self.open_button.config(command=msg[1])
+                if (msg[0]=="SetupRead"):
+                    self.read_button.config(command=msg[1])
                 if (msg[0]=="SetupScore"):
                     self.scores_button.config(command=msg[1])
                 if (msg[0]=="SetupLibrary"):
