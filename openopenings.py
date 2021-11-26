@@ -125,7 +125,7 @@ class OpenOpenings(object):
                                     self.node = self.var_node[-1].variations[self.var_num[-1]]
                                     self.board = self.backup_board[-1].copy()
                                 self.queue.put(["Board",self.board])
-                            else:
+                            elif self.node is not None:
                                 self.queue.put(["SetReadText", self.node.comment])
                                 self.node = self.node.next()
 
@@ -231,7 +231,8 @@ class OpenOpenings(object):
             self.current = self.library.current_book + "/" + self.library.current_chapter
             self.board = game.board()
             self.node = game.next()
-            self.queue.put(["SetReadText", self.node.comment])
+            if self.node is not None:
+                self.queue.put(["SetReadText", self.node.comment])
             self.queue.put(["Board", self.board])
             self.queue.put(["CheckBoxState",tk.DISABLED])
             self.done = False
@@ -348,8 +349,9 @@ class OpenOpenings(object):
 
     def continue_text(self, event):
         if self.awaiting_continue and event.char == ' ':
-            self.queue.put(["SetReadText", self.node.comment])
-            self.awaiting_continue = False
+            if (self.node is not None):
+                self.queue.put(["SetReadText", self.node.comment])
+                self.awaiting_continue = False
                 
     def end_application(self):
         self.running = False
