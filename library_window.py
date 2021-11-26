@@ -30,6 +30,8 @@ class LibraryWindow(object):
         else:
             self.library = {}
 
+        self.lib_file = library_file
+
         self.select_book = -1
         self.win = None
         self.current_pgn = None
@@ -117,7 +119,8 @@ class LibraryWindow(object):
 
         self.select_window({
             "Select" : self.make_select_book(),
-            "Add to Library" : self.add_func
+            "Add to Library" : self.add_func,
+            "Rename" : self.make_rename_book()
         }, self.library)
         
 
@@ -129,6 +132,7 @@ class LibraryWindow(object):
                 newname = tk.simpledialog.askstring("New name", "Rename " + chapter + " to what?")
             
             self.library[self.current_book][newname] = self.library[self.current_book].pop(chapter)
+            self.write(self, self.lib_file)
             self.select_window({
                 "Select" : self.make_select_final(),
                 "Rename" : self.make_rename()
@@ -136,6 +140,19 @@ class LibraryWindow(object):
 
         return com
 
+    def make_rename_book(self):
+        def com():
+            book = self.listbox.get(self.listbox.curselection())
+            newname = ""
+            while (newname==""):
+                newname = tk.simpledialog.askstring("New name", "Rename " + book + " to what?")
+            
+            self.library[newname] = self.library.pop(book)
+            self.write(self.lib_file)
+            self.open_window()
+
+        return com
+    
 
 
     def rename(self, book0, chapter0, book1, chapter1):

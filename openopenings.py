@@ -53,8 +53,10 @@ class OpenOpenings(object):
         self.need_to_update_board = True
         self.player = None
         self.done = True
+        self.awaiting_continue = False
         self.tries = 0
         self.moves = 0
+        self.master.bind("<Key>", self.continue_text)
         
         self.var_num = [0]
         self.var_node = []
@@ -124,12 +126,17 @@ class OpenOpenings(object):
                                     self.board = self.backup_board[-1].copy()
                                 self.queue.put(["Board",self.board])
                             else:
+                                self.queue.put(["SetReadText", self.node.comment])
                                 self.node = self.node.next()
+
 
                             if ((self.node is None) & (self.var_num[-1]==0)):
                                 self.queue.put(["Status", "Done!"])
-                                self.write_score()
-                                self.library.write(self.lib_file)
+                                if (self.gui.read_mode.get()==0):
+                                    self.write_score()
+                                    self.library.write(self.lib_file)
+
+                                self.queue.put(["CheckBoxState", tk.NORMAL])
                         else:
                             self.queue.put(["Status", "Incorrect."])
 
@@ -224,7 +231,9 @@ class OpenOpenings(object):
             self.current = self.library.current_book + "/" + self.library.current_chapter
             self.board = game.board()
             self.node = game.next()
+            self.queue.put(["SetReadText", self.node.comment])
             self.queue.put(["Board", self.board])
+            self.queue.put(["CheckBoxState",tk.DISABLED])
             self.done = False
             self.internal_queue.put("Continue")
             
@@ -320,7 +329,6 @@ class OpenOpenings(object):
                 self.queue.put(["ChangeChapter",
                                 self.format_title(self.library.current_book +
                                                   " / " + self.library.current_chapter)])
-
             if (not self.done):
 
                 if (self.board.turn != self.player):
@@ -328,6 +336,9 @@ class OpenOpenings(object):
                         self.send_make_move(self.node.move)
                         self.board.push(self.node.move)
                         self.awaiting_move = True
+                        comment = "Press Space to see comment on next ply...\n" + self.node.comment
+                        self.queue.put(["SetReadText", comment])
+                        self.awaiting_continue = True
                         self.node = self.node.next()
                         self.moves = self.moves + 1
                         self.queue.put(["Move", self.moves])
@@ -335,7 +346,10 @@ class OpenOpenings(object):
                         self.done = True
                         self.queue.put(["Move", self.moves+1])
 
-
+    def continue_text(self, event):
+        if self.awaiting_continue and event.char == ' ':
+            self.queue.put(["SetReadText", self.node.comment])
+            self.awaiting_continue = False
                 
     def end_application(self):
         self.running = False

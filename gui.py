@@ -17,6 +17,7 @@
 # along with OpenOpenings.  If not, see <https://www.gnu.org/licenses/>.
 
 import tkinter as tk, time, threading, random, queue
+import tkinter.font as font
 from tkinter import ttk
 import chess
 import math
@@ -70,15 +71,16 @@ class UserInterface(object):
         self.output_label = tk.Label(self.frm, text="Get Ready!")
         self.output_label.grid(column=8, row=2)
 
+        self.read_mode = tk.IntVar()
+        self.read_mode_check = tk.Checkbutton(self.frm, text="Read Mode",
+                                              variable=self.read_mode)
+        self.read_mode_check.grid(row=3, column=8)
+
         self.start_button = tk.Button(self.frm, text="Start")
-        self.start_button.grid(column=8, row=3, sticky='nsew', padx=20, pady=5)
+        self.start_button.grid(column=8, row=4, sticky='nsew', padx=20, pady=5)
         self.hint_button = tk.Button(self.frm, text = "Hint")
-        self.hint_button.grid(column=8, row=4, sticky='nsew', padx=20, pady=5)
+        self.hint_button.grid(column=8, row=5, sticky='nsew', padx=20, pady=5)
 
-        self.read_button = tk.Button(self.frm, text = "Read")
-        self.read_button.grid(column=8, row=5, sticky='nsew', padx=20, pady=5)
-
-        
         self.library_button = tk.Button(self.frm, text="Library")
         self.library_button.grid(column=8, row=6, sticky='nsew', padx=20, pady=5)
 
@@ -89,10 +91,17 @@ class UserInterface(object):
         self.draw_board(chess.Board())
 
 
-
-        self.title_label = tk.Label(self.frm, text="No File Loaded.", width=40)
+        self.title_label = tk.Label(self.frm, text="No File Loaded.", width=45, padx=0)
         self.title_label.grid(row=8, columnspan=8, rowspan=2, sticky='nsew')
 
+        self.read_label = tk.Text(self.frm, width=45, height=6, relief='ridge', font=font.nametofont("TkDefaultFont"), background=master.cget('bg'), wrap=tk.WORD,bd=1, state=tk.DISABLED)
+        self.read_label.grid(row=10, column=0, columnspan=9, sticky='nsew')
+
+        self.read_scroll = tk.Scrollbar(self.frm)
+        self.read_scroll.grid(row=10, column=9, sticky='ns')
+
+        self.read_scroll.config(command=self.read_label.yview)
+        self.read_label.config(yscrollcommand=self.read_scroll.set)
 
     def processIncoming(self):
         while self.queue.qsize():
@@ -123,6 +132,15 @@ class UserInterface(object):
                 if (msg[0]=="MakeMove"):
                     self.draw_move(msg[1], msg[2], msg[3])
 
+                if (msg[0]=="SetReadText"):
+                    if (self.read_mode.get()==1):
+                        self.read_label.config(state=tk.NORMAL)
+                        self.read_label.delete("1.0", tk.END)
+                        self.read_label.insert(tk.END, msg[1])
+                        self.read_label.config(state=tk.DISABLED)
+
+                if (msg[0]=="CheckBoxState"):
+                    self.read_mode_check.config(state=msg[1])
                 if (msg[0]=="SelectSquare"):
                     self.buttons[msg[1]].configure(bg='#aaaa00')
                     self.selected_squares.append(msg[1])
