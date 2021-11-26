@@ -327,8 +327,8 @@ class OpenOpenings(object):
             msg = self.internal_queue.get()
             if (msg=="Library"):
                 self.queue.put(["ChangeChapter",
-                                self.format_title(self.library.current_book +
-                                                  " / " + self.library.current_chapter)])
+                                self.library.current_book +
+                                " / " + self.library.current_chapter])
             if (not self.done):
 
                 if (self.board.turn != self.player):
@@ -336,7 +336,7 @@ class OpenOpenings(object):
                         self.send_make_move(self.node.move)
                         self.board.push(self.node.move)
                         self.awaiting_move = True
-                        comment = "Press Space to see comment on next ply...\n" + self.node.comment
+                        comment = "Press Space to see comment on next ply...\n\n" + self.node.comment
                         self.queue.put(["SetReadText", comment])
                         self.awaiting_continue = True
                         self.node = self.node.next()

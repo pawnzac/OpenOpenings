@@ -1,6 +1,13 @@
 # OpenOpenings
 
+## Screenshots
+
 ![Screenshot](screenshot1.png?raw=true)
+
+
+In Read Mode:
+
+![Screenshot](screenshot2.png?raw=true)
 
 ## What it does?
 

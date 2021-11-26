@@ -19,6 +19,7 @@
 import tkinter as tk, time, threading, random, queue
 import json
 from tkinter import ttk
+from tkinter.messagebox import askyesno
 
 class LibraryWindow(object):
     def __init__(self, library_file, queue, add_func):
@@ -99,7 +100,8 @@ class LibraryWindow(object):
 
             self.select_window({
                 "Select" : self.make_select_final(),
-                "Rename" : self.make_rename()
+                "Rename" : self.make_rename(),
+                "Delete" : self.make_delete_chapter()
             }, self.library[self.book_select])
             
 
@@ -120,7 +122,8 @@ class LibraryWindow(object):
         self.select_window({
             "Select" : self.make_select_book(),
             "Add to Library" : self.add_func,
-            "Rename" : self.make_rename_book()
+            "Rename" : self.make_rename_book(),
+            "Delete" : self.make_delete_book()
         }, self.library)
         
 
@@ -132,7 +135,7 @@ class LibraryWindow(object):
                 newname = tk.simpledialog.askstring("New name", "Rename " + chapter + " to what?")
             
             self.library[self.current_book][newname] = self.library[self.current_book].pop(chapter)
-            self.write(self, self.lib_file)
+            self.write(self.lib_file)
             self.select_window({
                 "Select" : self.make_select_final(),
                 "Rename" : self.make_rename()
@@ -154,6 +157,29 @@ class LibraryWindow(object):
         return com
     
 
+    def make_delete_chapter(self):
+        def com():
+            chapter = self.listbox.get(self.listbox.curselection())
+            answer = askyesno("Confirm Delete", "Do you want to delete " + chapter + " in book " + self.current_book + "?")
+            if answer:
+                self.library[self.current_book].pop(chapter)
+                self.write(self.lib_file)
+                self.select_window({
+                    "Select" : self.make_select_final(),
+                    "Rename" : self.make_rename(),
+                    "Delete" : self.make_delete_chapter()
+                }, self.library[self.book_select])
+        return com
+
+    def make_delete_book(self):
+        def com():
+            book = self.listbox.get(self.listbox.curselection())
+            answer = askyesno("Confirm Delete", "Do you want to delete book " +  book + "?")
+            if answer:
+                self.library.pop(book)
+                self.write(self.lib_file)
+                self.open_window()
+        return com
 
     def rename(self, book0, chapter0, book1, chapter1):
         if (book1 not in self.library):

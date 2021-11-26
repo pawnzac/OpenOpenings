@@ -91,14 +91,14 @@ class UserInterface(object):
         self.draw_board(chess.Board())
 
 
-        self.title_label = tk.Label(self.frm, text="No File Loaded.", width=45, padx=0)
-        self.title_label.grid(row=8, columnspan=8, rowspan=2, sticky='nsew')
+        self.title_label = tk.Label(self.frm, text="No File Loaded.", width=45, padx=0, wraplength=350)
+        self.title_label.grid(row=8, columnspan=8)
 
         self.read_label = tk.Text(self.frm, width=45, height=6, relief='ridge', font=font.nametofont("TkDefaultFont"), background=master.cget('bg'), wrap=tk.WORD,bd=1, state=tk.DISABLED)
-        self.read_label.grid(row=10, column=0, columnspan=9, sticky='nsew')
+        self.read_label.grid(row=9, column=0, columnspan=9, sticky='nsew')
 
         self.read_scroll = tk.Scrollbar(self.frm)
-        self.read_scroll.grid(row=10, column=9, sticky='ns')
+        self.read_scroll.grid(row=9, column=9, sticky='ns')
 
         self.read_scroll.config(command=self.read_label.yview)
         self.read_label.config(yscrollcommand=self.read_scroll.set)
