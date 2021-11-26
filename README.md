@@ -44,3 +44,11 @@ from the project's directory will output `dist/openopenings`, a standalone execu
 
 Once I've iterated a bit more on it, I'll add the single-file release to the page so that it's easy to just download the file for people that don't have Python.
 
+## Documentation
+
+To add PGNs to the Library, click Library->Add to Library. Can select groups of PGN and import them all as separate chapters in the same book. If a PGN contains multiple games, they will also all be added to the same book. The chapters are automatically named after the Event tag in the PGN. Lichess studies have their chapter titles in the Event tag. Chapters can be renamed with Library->(Select Book Name)->Select->Rename. PGN files do _not_ need to be retained or kept in the same location after, the PGNs are saved in the directory itself.
+
+"Read Mode" disables scoring and displays any comments in the PGN below the board. Useful for browsing a lesson before practicing it.
+
+Data is saved in the Home directory in file ".openopenings.json". 
+
