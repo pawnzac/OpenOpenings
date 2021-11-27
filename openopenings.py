@@ -32,6 +32,7 @@ import json
 from gui import UserInterface
 from utility import *
 import io
+from import_window import ImportWindow
 class OpenOpenings(object):
     def __init__(self, master):
         self.master = master
@@ -182,41 +183,34 @@ class OpenOpenings(object):
             fs = tk.filedialog.askopenfilenames(title="Open")
             if (len(fs)==0):
                 return
-            
-            color = "no"
-            while ((color != "white") & (color != "black") & (color != "")):
-                color = tk.simpledialog.askstring("Color to play", "What color will you play? (white/black)")
 
-                if (color==""):
-                    return
-                    
-                book = tk.simpledialog.askstring("Book to add to", "What book to add it to?")
-                if (book==""):
-                    return
+            def after(color, book, tag):
+                for f in fs:
+                    if (f==""):
+                        return
 
-            for f in fs:
-                if (f==""):
-                    return
+                    fh = open(f,mode='r')
 
-                fh = open(f,mode='r')
-
-                game = chess.pgn.read_game(fh)
-                while (game is not None):
-                    exporter = chess.pgn.StringExporter(headers=True,
-                                                        variations=True,
-                                                        comments=True)
-                
-                    pgn = game.accept(exporter)
-
-                    self.library.add_to_library(game.headers["Event"],
-                                                pgn, book, color)
-                    
                     game = chess.pgn.read_game(fh)
-                fh.close()
+                    while (game is not None):
+                        exporter = chess.pgn.StringExporter(headers=True,
+                                                            variations=True,
+                                                            comments=True)
                 
-            self.library.write(self.lib_file)
-            self.library.open_window()
-            self.internal_queue.put("Continue")
+                        pgn = game.accept(exporter)
+
+                        self.library.add_to_library(game.headers[tag],
+                                                    pgn, book, color)
+                    
+                        game = chess.pgn.read_game(fh)
+                    fh.close()
+                
+                self.library.write(self.lib_file)
+                self.library.open_window()
+                self.internal_queue.put("Continue")
+                
+            ImportWindow(after)
+
         return com
 
     def make_start(self):
