@@ -149,6 +149,14 @@ class OpenOpenings(object):
 
         return com
 
+    def make_full_move_hint(self):
+        def com(event):
+            self.tries += 5*(2-self.hint_level)
+            self.hint_level = 2
+            do = self.make_hint()
+            do()
+
+        return com
     def make_hint(self):
         def com():
             if self.node is None:
@@ -253,6 +261,7 @@ class OpenOpenings(object):
                                 self.cancel_moves])
     def set_hint(self):
         self.queue.put(["SetupHint", self.make_hint()])
+        self.queue.put(["SetRightClickHint", self.make_full_move_hint()])
 
     def set_open(self):
         self.queue.put(["SetupOpen", self.make_open()])

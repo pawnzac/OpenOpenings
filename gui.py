@@ -161,6 +161,8 @@ class UserInterface(object):
                     self.buttons[msg[1]].config(command=msg[2])
                 if (msg[0]=="Cancel"):
                     self.buttons[msg[1]].bind("<Button-3>", msg[2])
+                if (msg[0]=="SetRightClickHint"):
+                    self.hint_button.bind("<Button-3>", msg[1])
             except queue.Empty:
                 pass
 

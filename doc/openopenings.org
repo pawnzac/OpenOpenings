@@ -1,0 +1,43 @@
+# -*- org-html-preamble-format: (("en" "%t<br>%a<br>%T")); -*-
+#+TITLE: OpenOpenings
+#+AUTHOR: @pawnzac
+#+DESCRIPTION: OpenOpenings is a simple program for drilling chess openings and other lessons that have PGN files.
+#+SETUPFILE: theme-readtheorg-local.setup
+
+#+HTML_HEAD: <!-- Global site tag (gtag.js) - Google Analytics -->
+#+HTML_HEAD: <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59441513-2"></script>
+#+HTML_HEAD: <script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-59441513-2');</script>
+
+* Introduction
+
+OpenOpenings is an application for drilling chess openings and other chess lessons for which you have PGN files.  The application allows you to manage your lessons, read your lessons, and practice the lesson's moves.  
+
+* Basic Game Rules
+
+You select a chess game to play one color of, i.e. you might study a line in the French Defense, playing black.  The goal is to get the highest Move to Tries Ratio.  A try is any guess you make and a move is a move you have to figure out.  You can ask for hints as well in three levels (piece type, original square of the piece to move, and the move itself).  Each hint level costs 5 tries.
+
+* Library Button
+
+The Library Button opens a window listing the "books" you have already created in the library (it will be blank initially).  From here, you can perform various management actions on the books such as renaming them or deleting them.  You can also click *Add to Library* which will allow you to import PGN files into books or create new books to hold PGN files.
+
+Multiple files can be selected to add to the library, they will all be added to the same book.  The initial names of the chapters are the "Event" tag in the PGN.
+
+The Library windows are also used to *Select* the "chapter" of the book you want to practice or read.  Click *Select* to select the book highlighted in the list, and then *Select* the chapter in the same way on the subsequent window.
+
+* Start Button
+
+** Read Mode Unchecked
+
+When the Read Mode checkbox is unchecked, clicking on the start button starts a scored training session where you try to correctly input the moves in the PGN file (for the color you selected represents the player when you added the game to the library).  None of the comments in the PGN file are displayed below the window and your score for the session is saved in the library.
+
+** Read Mode Checked
+
+When the Read Mode checkbox is checked, clicking on the start button starts an /unscored/ training session useful for reading the lesson.  Comments in the PGN file are displayed below the board.
+
+* Hint Button
+
+The hint button gives you a hint.  There are three hint-levels.  Each hint level costs 5 tries.  The first tells you what type of piece to move.  The second tells you which piece to move.  The third tells you the exact move to make.  Right-clicking on the Hint Button goes immediately to the third hint level (revealing the move to make).  It costs the same number of tries either way.
+
+* Scores Button
+
+Scores displays current scores for all chapters in the current book.  It shows the average moves-to-tries ratio (scaled to be between 0 and 100) for each chapter for all-time, in the last 30 days, and in the last 7 days.
