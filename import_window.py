@@ -54,7 +54,8 @@ class ImportWindow(object):
         self.after = after
     
     def ok_command(self):
-        self.after(self.color_var.get(), self.book.get(), self.tag.get())
+        color = "white" if self.color_var.get()==chess.WHITE else "black"
+        self.after(color, self.book.get(), self.tag.get())
         self.win.destroy()
         
     def cancel_command(self):
