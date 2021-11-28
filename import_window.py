@@ -58,6 +58,7 @@ class ImportWindow(object):
         self.after(color, self.book.get(), self.tag.get())
         self.win.destroy()
         
+        
     def cancel_command(self):
         self.win.destroy()
         

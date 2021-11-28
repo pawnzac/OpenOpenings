@@ -106,7 +106,7 @@ class OpenOpenings(object):
                             self.awaiting_move = False
                             self.need_to_update_board = True
                             self.hint_level = 0
-                            
+
                             if (len(self.node.variations)>1):
                                 self.backup_board.append(self.board.copy())
                                 self.var_node.append(self.node)
@@ -115,7 +115,7 @@ class OpenOpenings(object):
                                     self.var_num[-1] = 1
                                 
                                 self.node = self.node.variations[self.var_num[-1]]
-                            elif ((self.var_num[-1] != 0) & (self.node.next() is None)):
+                            elif ((self.var_num[-1] != 0) & ((self.node.next() is None) or (self.node.next().next() is None))):
                                 if (len(self.var_node[-1].variations) <= (self.var_num[-1]+1)):
                                     self.var_num.pop()
                                     self.node = self.var_node[-1].variations[0]
@@ -337,6 +337,13 @@ class OpenOpenings(object):
 
                 if (self.board.turn != self.player):
                     if (self.node is not None):
+                        if (self.node.next() is None):
+                            if (len(self.var_num) > 0):
+                                self.var_num.pop()
+                                self.node = self.var_node[-1].variations[0]
+                                self.board = self.backup_board.pop().copy()
+                                self.var_node.pop()
+
                         self.send_make_move(self.node.move)
                         self.board.push(self.node.move)
                         self.awaiting_move = True
@@ -344,6 +351,7 @@ class OpenOpenings(object):
                         self.queue.put(["SetReadText", comment])
                         self.awaiting_continue = True
                         self.node = self.node.next()
+                            
                         self.moves = self.moves + 1
                         self.queue.put(["Move", self.moves])
                     elif (len(self.var_num) == 0):
