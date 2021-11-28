@@ -23,7 +23,7 @@ from os.path import expanduser, exists
 
 class ScoreWindow(object):
     def __init__(self, stats, data):
-        win = tk.Toplevel()
+        win = tk.Toplevel(class_="OpenOpenings")
         win.wm_title("Scores")
         self.current_rows = 0
         tk.Label(win, text="Moves Per Try [0-100%]").grid(row=0, columnspan=len(stats)+1, sticky='nsew')

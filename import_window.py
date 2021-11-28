@@ -4,7 +4,7 @@ import chess
 
 class ImportWindow(object):
     def __init__(self, after):
-        self.win = tk.Toplevel()
+        self.win = tk.Toplevel(class_="OpenOpenings")
         self.win.wm_title("Import")
 
         self.frame = ttk.Frame(self.win, padding=10)

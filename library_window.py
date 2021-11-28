@@ -67,7 +67,7 @@ class LibraryWindow(object):
         if (self.win is not None):
             self.win.destroy()
 
-        self.win = tk.Toplevel()
+        self.win = tk.Toplevel(class_="OpenOpenings")
         self.win.wm_title("Library")
         self.frame = ttk.Frame(self.win, padding=10)
         self.frame.grid()

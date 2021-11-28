@@ -36,6 +36,7 @@ from import_window import ImportWindow
 class OpenOpenings(object):
     def __init__(self, master):
         self.master = master
+        self.master.winfo_toplevel().title("OpenOpenings")
         self.queue = queue.Queue()
 
         self.internal_queue = queue.Queue()

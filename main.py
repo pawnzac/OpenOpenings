@@ -19,11 +19,12 @@
 
 import tkinter as tk
 
-root = tk.Tk()
+root = tk.Tk(className="OpenOpenings")
 
 from openopenings import OpenOpenings
 
 root.title("OpenOpenings")
+root.wm_title("OpenOpenings")
 
 client = OpenOpenings(root)
 
