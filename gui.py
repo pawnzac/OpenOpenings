@@ -25,7 +25,7 @@ from utility import *
 import sys
 import os
 black_square_color = "#add8e6"
-
+black_square_color = "#A9A9A9"
 try:
     base_path = sys._MEIPASS
 except Exception:
