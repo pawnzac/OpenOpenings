@@ -18,6 +18,8 @@
 
 
 import tkinter as tk
+import sys
+import os
 
 root = tk.Tk(className="OpenOpenings")
 
@@ -26,6 +28,13 @@ from openopenings import OpenOpenings
 root.title("OpenOpenings")
 root.wm_title("OpenOpenings")
 
+try:
+    base_path = sys._MEIPASS
+except Exception:
+    base_path = os.path.abspath(".")
+
+
+root.iconphoto(True, tk.PhotoImage(file=os.path.join(base_path,"img/icon.png")))
 client = OpenOpenings(root)
 
 root.protocol("WM_DELETE_WINDOW", client.end_application)
