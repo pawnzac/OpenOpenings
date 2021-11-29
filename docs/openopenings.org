@@ -4,10 +4,6 @@
 #+DESCRIPTION: OpenOpenings is a simple program for drilling chess openings and other lessons that have PGN files.
 #+SETUPFILE: theme-readtheorg-local.setup
 
-#+HTML_HEAD: <!-- Global site tag (gtag.js) - Google Analytics -->
-#+HTML_HEAD: <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59441513-2"></script>
-#+HTML_HEAD: <script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-59441513-2');</script>
-
 * Introduction
 
 OpenOpenings is an application for drilling chess openings and other chess lessons for which you have PGN files.  The application allows you to manage your lessons, read your lessons, and practice the lesson's moves.  
