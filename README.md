@@ -46,7 +46,7 @@ Once I've iterated a bit more on it, I'll add the single-file release to the pag
 
 ## Documentation
 
-To add PGNs to the Library, click Library->Add to Library. Can select groups of PGN and import them all as separate chapters in the same book. If a PGN contains multiple games, they will also all be added to the same book. The chapters are automatically named after the Event tag in the PGN. Lichess studies have their chapter titles in the Event tag. Chapters can be renamed with Library->(Select Book Name)->Select->Rename. PGN files do _not_ need to be retained or kept in the same location after, the PGNs are saved in the Library itself.
+To add PGNs to the Library, click Library->Add to Library. Can select groups of PGN and import them all as separate chapters in the same book. If a PGN contains multiple games, they will also all be added to the same book. The chapters are automatically named after a given tag in the PGN (by default, the Event tag: Lichess studies have their chapter titles in the Event tag). Chapters can be renamed with Library->(Select Book Name)->Select->Rename. PGN files do _not_ need to be retained or kept in the same location after, the PGNs are saved in the Library itself.
 
 "Read Mode" disables scoring and displays any comments in the PGN below the board. Useful for browsing a lesson before practicing it.
 
