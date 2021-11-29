@@ -24,6 +24,7 @@ import math
 from utility import *
 import sys
 import os
+from version import version
 black_square_color = "#A9A9A9"
 try:
     base_path = sys._MEIPASS
@@ -101,6 +102,9 @@ class UserInterface(object):
 
         self.read_scroll.config(command=self.read_label.yview)
         self.read_label.config(yscrollcommand=self.read_scroll.set)
+
+        self.version_label = tk.Label(self.frm, text=version)
+        self.version_label.grid(row=10, column=8, sticky="nsew")
 
     def processIncoming(self):
         while self.queue.qsize():
