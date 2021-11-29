@@ -190,7 +190,7 @@ class OpenOpenings(object):
                     if (f==""):
                         return
 
-                    fh = open(f,mode='r')
+                    fh = open(f,mode='r',encoding="utf-8")
 
                     game = chess.pgn.read_game(fh)
                     while (game is not None):

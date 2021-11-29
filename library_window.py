@@ -41,7 +41,7 @@ class LibraryWindow(object):
         self.current_book = None
         
     def load_library(self, file_name):
-        with open(file_name, 'r') as f:
+        with open(file_name, 'r', encoding="utf-8") as f:
             self.library = json.load(f)
 
     def add_to_library(self, name, pgn, book, color):
@@ -190,7 +190,7 @@ class LibraryWindow(object):
         
         
     def write(self, lib_file):
-        with open(lib_file,'w') as f:
+        with open(lib_file,'w', encoding="utf-8") as f:
             json.dump(self.library, f)
 
     def get_sessions(self):
